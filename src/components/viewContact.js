@@ -1,8 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-import Alert from './closeButton'
-
 import contact from '../services/contactService';
 class ViewContact extends React.Component {
     constructor() {
@@ -13,6 +11,19 @@ class ViewContact extends React.Component {
         }
     }
     componentDidMount() {
+        console.log("hello sandeep");
+        var selectContact = contact.getSelectedContact();
+        console.log(selectContact);
+        this.setState({
+            viewContact: selectContact
+        }, () => console.log(this.state.viewContact))
+    }
+    // why using willReceiveProps ? bcoz when loading didMount executing but not getting actual o/p what we expecting .
+    // when we click 2nd time,
+    // for 1st click loading did mount 2nd click willReceiveprops getting. 
+    componentWillReceiveProps() {
+        console.log("willreceiveprops")
+        console.log("hello sandeep");
         var selectContact = contact.getSelectedContact();
         console.log(selectContact);
         this.setState({
@@ -20,7 +31,7 @@ class ViewContact extends React.Component {
         }, () => console.log(this.state.viewContact))
     }
     close = () => {
-       this.props.history.push('/contacts')
+        this.props.history.push('/contacts')
     }
     render() {
         return (

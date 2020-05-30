@@ -75,7 +75,7 @@ class AddContacts extends React.Component {
                             </div>
                             <div className="form-group ">
                                 <label htmlFor="userName">UserName</label>
-                                <input type="text" className="form-control" id="userName" name="userName" placeholder="NickName" onChange={this.onChangeText} />
+                                <input type="text" className="form-control" id="userName" name="userName" placeholder="UserName" onChange={this.onChangeText} />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="companyName">Company</label>

@@ -4,6 +4,7 @@ import { withRouter, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import AddContacts from '../components/addContacts';
+import { searchContactAction } from '../+state/actions';
 // import SideBar from './sidebar';
 import contact from '../services/contactService';
 import ViewContact from './viewContact';
@@ -12,9 +13,9 @@ class Contacts extends React.Component {
     constructor() {
         super();
         this.state = {
-            contacts: [],
+            // contacts: [],
             searchKey: '',
-            itemsToDisplay: []
+            // itemsToDisplay: []
         }
     }
 
@@ -31,7 +32,10 @@ class Contacts extends React.Component {
     // }
     selectContact = (value) => {
         contact.selectedContact(value);
-        this.props.history.push('/contacts/viewcontact');
+        this.props.history.push('/contacts/viewcontact/' + value.fullName);
+        // const routePath = '/contacts/viewcontact/' + value.fullName
+        // return <Redirect to={routePath} /> // we can write like this but here it did not work donno why.
+        //just iam keeping here for further reference.we use this kind of whenever requires.
 
     }
     onChangeText = (event) => {
@@ -40,25 +44,29 @@ class Contacts extends React.Component {
         })
     }
     search = () => {
-        // console.log(this.props.contacts.contacts)
-        // var filteredContacts = this.props.contacts.contacts.filter((item) => {
+        // console.log(this.state.searchKey);
+        this.props.searchContact(this.state.searchKey)
+        // here function calling part:::  what we wrote in mapDispatch and passing value as this.state.searchKey(i,e parameter value).
+        // here we are passing this.state.searchKey  for dispatch :::searchContact: (value) => dispatch(searchContactAction(value)) 
+        // console.log(this.state.contacts.contacts)
+        /****************** for reactjs */
+        // var filteredContacts = this.state.contacts.contacts.filter((item) => {
 
-        //     return item.fullName.toLowerCase().search(this.props.searchKey.toLowerCase()) > -1;
+        //     return item.fullName.toLowerCase().search(this.state.searchKey.toLowerCase()) > -1;
 
         // })
         // this.setState({
         //     itemsToDisplay: filteredContacts
         // })
         // console.log(filteredContacts);
-
     }
     render() {
-        console.log(this.props.contacts.searchedContact)
-        const contactsList = this.props.searchedContact && this.props.searchedContact.map((value, index) => {
+        const contactsList = this.props.contacts.map((value, index) => {
             console.log(value)
             return (
                 <tr key={index} onClick={() => this.selectContact(value)}>
-                    <input type="checkbox" aria-label="Checkbox for following text input"></input>
+                    <div> <input type="checkbox" aria-label="Checkbox for following text input" /></div>
+
                     <div className="renu">{value.nickName}</div>
                     <div></div>
                     <td className="col-md-0">{value.fullName}
@@ -104,12 +112,17 @@ class Contacts extends React.Component {
                     </div>
 
                     <div className="col-md-3">
+                        {/* which componenent we wanna make nested route .here in "contacts" page we wanna display of "addContacts" page. */}
                         <button className="btn btn-primary mt-5" onClick={() => this.props.history.push('/contacts/addcontacts')}>+ Add Contact</button>
-
                     </div>
                     <div className="col-md-5">
+
+                        {/* nested Routing declaration */}
                         <Route path={`${this.props.match.url}/addcontacts`} component={AddContacts} />
-                        <Route path={`${this.props.match.url}/viewcontact`} component={ViewContact} />
+                        <Route path={`${this.props.match.url}/viewcontact/:id`} component={ViewContact} />
+                        {/* /viewcontact/:id`  => with id only we can achieve, coz if we click 1st time contact details displays,and  when click 2nd time it does not disply another contact details
+                        so, if we put /:id throught id it opens .coz each contact has its own id right..  */}
+                        {/* exact='true' :::: if same route is there it will open */}
                     </div>
                 </div>
                 <div className="row mt-5">
@@ -133,11 +146,16 @@ class Contacts extends React.Component {
         );
     }
 }
-const mapStateToProps = state => {
-    console.log(state)
+// here we can write store or state or anything,bcoz varibale can be anything. so no matter what is
+const mapStateToProps = store => {
     return {
-        contacts: state.contacts,
-        searchedContact: state.searchedContact
+        contacts: store.itemsToDisplay
     }
 }
-export default connect(mapStateToProps)(withRouter(Contacts));
+const mapDispatchToProps = dispatch => {
+    return {
+        // function declaration part, here in seachContact funtion we called another function.
+        searchContact: (value) => dispatch(searchContactAction(value))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Contacts));

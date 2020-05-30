@@ -7,9 +7,10 @@ export const addContactActions = (value) => {
 }
 
 export const searchContactAction = (value)=>{
+    console.log("search key",value)
     return {
         type:'SEARCH_CONTACT',
-        payload:value
+        payload:value // Reducer:(state,action)::::action.payload=>value
     }
 }
 
